@@ -3,3 +3,6 @@ build:
 
 run:
 	./dist/app
+
+clean:
+	rm ./dist/app
