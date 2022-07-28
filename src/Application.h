@@ -9,6 +9,8 @@ class Application {
     private:
         bool running = false;
         std::vector<Particle*> particles;
+        SDL_Rect liquid;
+        
 
     public:
         Application() = default;
