@@ -4,5 +4,8 @@ g++ -std=c++17 ./src/*.cpp ./src/Physics/*.cpp -I /opt/homebrew/include -L /opt/
 run:
 	./dist/app
 
+format:
+	astyle -n --recursive ./src/\*.cpp,\*.h
+
 clean:
 	rm ./dist/app
