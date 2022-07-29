@@ -1,4 +1,4 @@
-#include "./force.h"
+#include "./Force.h"
 
 
 Vec2 Force ::GenerateDragForce(const Particle& particle, float k){

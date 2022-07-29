@@ -12,26 +12,62 @@ void Application::Setup() {
     smallBall->radius = 4;
     particles.push_back(smallBall);
 
+    pushForce = Vec2(0.0, 0.0);
+
     Particle* bigBall = new Particle(100, 100, 3.0);
     bigBall->radius = 12;
     particles.push_back(bigBall);
 
     liquid.x = 0;
     liquid.y = Graphics::Height() / 2;
-    liquid.width = Graphics::Width();
-    liquid.height = Graphics::Height() / 2;
+    liquid.w = Graphics::Width();
+    liquid.h = Graphics::Height() / 2;
 }
 
 void Application::Input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+          if(
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        Particle* ball = new Particle(x, y, 1.0);
+        ball->radius = 5;
+        particles.push_back(ball);
+        break;
         case SDL_QUIT:
         running = false;
         break;
         case SDL_KEYDOWN:
+        if(event.key.keysym.sym == SDLK_UP) {
+          pushForce.y = -50 * PIXELS_PER_METER;
+        }
+        if(event.key.keysym.sym == SDLK_DOWN) {
+          pushForce.y = 50 * PIXELS_PER_METER;
+        }
+        if(event.key.keysym.sym == SDLK_LEFT) {
+          pushForce.x = -50 * PIXELS_PER_METER;
+        }
+        if(event.key.keysym.sym == SDLK_RIGHT) {
+          pushForce.x = 50 * PIXELS_PER_METER;
+        }
         if (event.key.keysym.sym == SDLK_ESCAPE)
           running = false;
+        break;
+        case SDL_KEYUP:
+        if(event.key.keysym.sym == SDLK_UP) {
+          pushForce.y = 0;
+        }
+        if(event.key.keysym.sym == SDLK_DOWN) {
+          pushForce.y = 0;
+        }
+        if(event.key.keysym.sym == SDLK_LEFT) {
+          pushForce.x = 0;
+        }
+        if(event.key.keysym.sym == SDLK_RIGHT) {
+          pushForce.x = 0;
+        }
         break;
     }
   }
@@ -50,11 +86,18 @@ void Application::Update() {
   }
   timePreviousFrame = SDL_GetTicks();
 
-  Vec2 wind = Vec2(0.2 * PIXELS_PER_METER, 0.0);
   Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
+
   for(auto particle: particles) {
-    particle->AddForce(wind);
     particle->AddForce(weight * particle->mass);
+    particle->AddForce(pushForce);
+    if(particle->position.y >= liquid.y) {
+      Vec2 drag = Force::GenerateDragForce(*particle, 0.04);
+      particle->AddForce(drag);
+    } else {
+      Vec2 wind = Vec2(0.2 * PIXELS_PER_METER, 0.0);
+      particle->AddForce(wind);
+    }
   }
 
   for(auto particle: particles) {
@@ -85,7 +128,13 @@ void Application::Update() {
 
 void Application::Render() {
     Graphics::ClearScreen(0xFF056263);
-  Graphics::DrawFillRect(liquid.x + liquid.w / 2, liquid.y + liquid.h / 2, liquid.w, liquid.y, 0xFF6E3713);
+    Graphics::DrawFillRect(
+      liquid.x + liquid.w / 2, 
+      liquid.y + liquid.h / 2, 
+      liquid.w, 
+      liquid.y, 
+      0xFF6E3713
+    );
 
 for(auto particle: particles) {
     Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
