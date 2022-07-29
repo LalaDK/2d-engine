@@ -6,7 +6,8 @@
 #include "Physics/Vec2.h"
 #include <vector>
 
-struct Graphics {
+struct Graphics
+{
     static int windowWidth;
     static int windowHeight;
     static SDL_Window* window;

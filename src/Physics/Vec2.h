@@ -1,13 +1,14 @@
 #ifndef VEC2_H
 #define VEC2_H
 
-struct Vec2 {
+struct Vec2
+{
     float x;
     float y;
 
     Vec2();
     Vec2(float x, float y);
-    
+
     ~Vec2() = default;
 
     void Add(const Vec2& v);                 // v1.Add(v2)
@@ -28,7 +29,7 @@ struct Vec2 {
     Vec2& operator = (const Vec2& v);        // v1 = v2
     bool operator == (const Vec2& v) const;  // v1 == v2
     bool operator != (const Vec2& v) const;  // v1 != v2
-    
+
     Vec2 operator + (const Vec2& v) const;   // v1 + v2
     Vec2 operator - (const Vec2& v) const;   // v1 - v2
     Vec2 operator * (const float n) const;   // v1 * n
