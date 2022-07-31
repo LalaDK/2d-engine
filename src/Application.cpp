@@ -9,21 +9,13 @@ bool Application::IsRunning()
 void Application::Setup()
 {
     running = Graphics::OpenWindow();
-
-    Particle* smallBall = new Particle(50, 100, 1.0);
-    smallBall->radius = 4;
-    particles.push_back(smallBall);
-
     pushForce = Vec2(0.0, 0.0);
-
-    Particle* bigBall = new Particle(100, 100, 3.0);
-    bigBall->radius = 12;
-    particles.push_back(bigBall);
-
-    liquid.x = 0;
-    liquid.y = Graphics::Height() / 2;
-    liquid.w = Graphics::Width();
-    liquid.h = Graphics::Height() / 2;
+    anchor = Vec2(Graphics::Width() / 2, 40);
+    for(int i = 0; i < 10; i++) {
+      Particle* bob = new Particle(Graphics::Width() / 2.0 + (i* 50), 100 + (i * 50), 1.0);
+      bob->radius = 6;
+      particles.push_back(bob);
+    }
 }
 
 void Application::Input()
@@ -104,21 +96,28 @@ void Application::Update()
 
     Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
 
+    Vec2 springForceAnchor = Force::GenerateSpringForce(*particles[0], anchor, 15, 300);
+    particles[0]->AddForce(springForceAnchor);
+
     for(auto particle: particles)
     {
-        particle->AddForce(weight * particle->mass);
-        particle->AddForce(pushForce);
-        if(particle->position.y >= liquid.y)
-        {
-            Vec2 drag = Force::GenerateDragForce(*particle, 0.04);
-            particle->AddForce(drag);
-        }
-        else
-        {
-            Vec2 wind = Vec2(0.2 * PIXELS_PER_METER, 0.0);
-            particle->AddForce(wind);
-        }
+      particle->AddForce(weight * particle->mass);
+      particle->AddForce(pushForce);
+
+      Vec2 drag = Force::GenerateDragForce(*particle, 0.002);
+      particle->AddForce(drag);
     }
+
+    for(int i = 1; i < 10; i++) {
+      Vec2 springForce = Force::GenerateSpringForce(*particles[i], *particles[i-1], 15, 300);
+      particles[i]->AddForce(springForce);
+      particles[i-1]->AddForce(-springForce);
+    }
+
+    //Vec2 attraction = Force::GenerateGravitationalForce(*particles[0], *particles[1], 1000.0, 5, 50);
+    //particles[0]->AddForce(attraction);
+    //particles[1]->AddForce(-attraction);
+
 
     for(auto particle: particles)
     {
@@ -155,14 +154,9 @@ void Application::Update()
 void Application::Render()
 {
     Graphics::ClearScreen(0xFF056263);
-    Graphics::DrawFillRect(
-        liquid.x + liquid.w / 2,
-        liquid.y + liquid.h / 2,
-        liquid.w,
-        liquid.y,
-        0xFF6E3713
-    );
 
+
+    Graphics::DrawFillCircle(anchor.x, anchor.y, 5, 0xFF0000FF);
     for(auto particle: particles)
     {
         Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
