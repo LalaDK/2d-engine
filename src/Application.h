@@ -6,8 +6,7 @@
 #include "./Physics/Force.h"
 #include <vector>
 
-class Application
-{
+class Application {
 private:
     bool running = false;
     std::vector<Body*> bodies;

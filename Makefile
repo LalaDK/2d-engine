@@ -5,7 +5,7 @@ run:
 	./dist/app
 
 format:
-	astyle -n --recursive ./src/\*.cpp,\*.h
+	astyle --style=java -n --recursive ./src/\*.cpp,\*.h
 
 clean:
 	rm ./dist/app

@@ -4,8 +4,7 @@
 #include "./Vec2.h"
 #include "./Body.h"
 
-struct Force
-{
+struct Force {
     static Vec2 GenerateDragForce(const Body& body, float k);
     static Vec2 GenerateFrictionForce(const Body& body, float k);
     static Vec2 GenerateGravitationalForce(const Body& bodyA, const Body& bodyB, float G, float minDistance, float maxDistance);

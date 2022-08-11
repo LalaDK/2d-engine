@@ -1,11 +1,9 @@
 #include "./Force.h"
 #include <algorithm>
 
-Vec2 Force ::GenerateDragForce(const Body& body, float k)
-{
+Vec2 Force ::GenerateDragForce(const Body& body, float k) {
     Vec2 dragForce = Vec2(0,0);
-    if(body.velocity.MagnitudeSquared() > 0)
-    {
+    if(body.velocity.MagnitudeSquared() > 0) {
         Vec2 dragDirection = body.velocity.UnitVector() * -1.0;
         float dragMagnitude = k * body.velocity.MagnitudeSquared();
         dragForce = dragDirection * dragMagnitude;
@@ -14,8 +12,7 @@ Vec2 Force ::GenerateDragForce(const Body& body, float k)
     return dragForce;
 };
 
-Vec2 Force ::GenerateFrictionForce(const Body& body, float k)
-{
+Vec2 Force ::GenerateFrictionForce(const Body& body, float k) {
     Vec2 frictionForce = Vec2(0,0);
     Vec2 frictionDirection = body.velocity.UnitVector() * -1.0;
     float frictionMagnitude = k;
