@@ -1,5 +1,6 @@
 #include "Body.h"
 #include <iostream>
+#include <math.h>
 
 Body::Body(const Shape& shape, float x, float y, float mass) {
     this->shape = shape.Clone();
@@ -34,7 +35,15 @@ Body::~Body() {
     std::cout << "Body destructor called!" << std::endl;
 }
 
+bool Body::IsStatic() const {
+  const float epsilon = 0.005f;
+  return fabs(invMass - 0.0) < epsilon; 
+};
+
 void Body::IntegrateLinear(float dt) {
+    if(IsStatic()) {
+      return;
+    }
     acceleration = sumForces * invMass;
     velocity += acceleration * dt;
     position += velocity * dt;
@@ -42,6 +51,9 @@ void Body::IntegrateLinear(float dt) {
 }
 
 void Body::IntegrateAngular(float dt) {
+    if(IsStatic()) {
+      return;
+    }
     angularAcceleration = sumTorque * invI;
     angularVelocity += angularAcceleration * dt;
     rotation += angularVelocity * dt;
