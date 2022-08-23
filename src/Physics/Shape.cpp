@@ -94,3 +94,23 @@ Vec2 PolygonShape::EdgeAt(int index) const {
     return worldVertices[nextVertex] - worldVertices[currVertex];
 
 }
+float PolygonShape::FindMinSeparation(const PolygonShape* other) const {
+    float separation = std::numeric_limits<float>::lowest();
+
+    // Loop all the vertices of "a"
+    for (int i = 0; i < this->worldVertices.size(); i++) {
+        Vec2 va = this->worldVertices[i];
+        Vec2 normal = this->EdgeAt(i).Normal();
+
+        float minSep = std::numeric_limits<float>::max();
+
+        // Loop all the vertices of "b"
+        for (int j = 0; j < other->worldVertices.size(); j++) {
+            Vec2 vb = other->worldVertices[j];
+            minSep = std::min(minSep, (vb - va).Dot(normal));
+        }
+        separation = std::max(separation, minSep);
+    }
+    return separation;
+}
+

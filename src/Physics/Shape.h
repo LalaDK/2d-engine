@@ -39,6 +39,7 @@ struct PolygonShape: public Shape {
     Vec2 EdgeAt(int index) const;
     Shape* Clone() const override;
     float GetMomentOfInertia() const override;
+    float FindMinSeparation(const PolygonShape* other) const;
     void UpdateVertices(float rotation, const Vec2& position);
 };
 

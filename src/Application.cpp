@@ -124,7 +124,6 @@ void Application::Update() {
             Contact contact;
 
             if(CollisionDetection::IsColliding(a, b, contact)) {
-                std::cout << "Collision!" << std::endl;
                 //contact.ResolveCollision();
                 Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
                 Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
