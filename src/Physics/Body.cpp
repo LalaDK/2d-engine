@@ -12,6 +12,7 @@ Body::Body(const Shape& shape, float x, float y, float mass) {
     this->angularVelocity = 0.0;
     this->sumForces = Vec2(0,0);
     this->sumTorque = 0.0;
+    this->restitution = 1.0;
 
 
     this->mass = mass;
@@ -36,13 +37,13 @@ Body::~Body() {
 }
 
 bool Body::IsStatic() const {
-  const float epsilon = 0.005f;
-  return fabs(invMass - 0.0) < epsilon; 
+    const float epsilon = 0.005f;
+    return fabs(invMass - 0.0) < epsilon;
 };
 
 void Body::IntegrateLinear(float dt) {
     if(IsStatic()) {
-      return;
+        return;
     }
     acceleration = sumForces * invMass;
     velocity += acceleration * dt;
@@ -52,7 +53,7 @@ void Body::IntegrateLinear(float dt) {
 
 void Body::IntegrateAngular(float dt) {
     if(IsStatic()) {
-      return;
+        return;
     }
     angularAcceleration = sumTorque * invI;
     angularVelocity += angularAcceleration * dt;
@@ -74,4 +75,12 @@ void Body::ClearForces() {
 
 void Body::ClearTorque() {
     this->sumTorque = 0.0;
+}
+
+void Body::ApplyImpulse(const Vec2& j) {
+    if(IsStatic()) {
+        return;
+    }
+
+    velocity+= j * invMass;
 }

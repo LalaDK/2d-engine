@@ -36,6 +36,7 @@ struct PolygonShape: public Shape {
     PolygonShape(const std::vector<Vec2> vertices);
     virtual ~PolygonShape();
     ShapeType GetType() const override;
+    Vec2 EdgeAt(int index) const;
     Shape* Clone() const override;
     float GetMomentOfInertia() const override;
     void UpdateVertices(float rotation, const Vec2& position);

@@ -87,3 +87,10 @@ float BoxShape::GetMomentOfInertia() const {
     // But this still needs to be multiplied by the rigidbody's mass
     return (0.083333) * (width * width + height * height);
 }
+
+Vec2 PolygonShape::EdgeAt(int index) const {
+    int currVertex = index;
+    int nextVertex = (index + 1) % worldVertices.size();
+    return worldVertices[nextVertex] - worldVertices[currVertex];
+
+}

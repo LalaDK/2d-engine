@@ -3,6 +3,7 @@
 #include "./Physics/Shape.h"
 #include "./Physics/CollisionDetection.h"
 #include "./Physics/Contact.h"
+#include <iostream>
 
 bool Application::IsRunning() {
     return running;
@@ -12,22 +13,23 @@ void Application::Setup() {
     running = Graphics::OpenWindow();
     pushForce = Vec2(0.0, 0.0);
 
-    Body *bigBall = new Body(CircleShape(100), 100, 100, 1.0);
-    Body *smallBall = new Body(CircleShape(50), 500, 100, 1.0);
-    bodies.push_back(bigBall);
-    bodies.push_back(smallBall);
+    Body* boxA = new Body(BoxShape(200, 200), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 1.0);
+    Body* boxB= new Body(BoxShape(200, 200), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 1.0);
+    boxA->angularVelocity= 0.4;
+    boxB->angularVelocity= 0.1;
+    bodies.push_back(boxA);
+    bodies.push_back(boxB);
+
+    //Body *bigBall = new Body(CircleShape(100), 100, 100, 1.0);
+    //Body *smallBall = new Body(CircleShape(50), 500, 100, 2.0);
+    //bodies.push_back(bigBall);
+    //bodies.push_back(smallBall);
 }
 
 void Application::Input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-        case SDL_MOUSEMOTION:
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            bodies[0]->position.x = x;
-            bodies[0]->position.y = y;
-            break;
         case SDL_QUIT:
             running = false;
             break;
@@ -61,6 +63,12 @@ void Application::Input() {
                 pushForce.x = 0;
             }
             break;
+        case SDL_MOUSEMOTION:
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+            bodies[0]->position.x = x;
+            bodies[0]->position.y = y;
+            break;
         }
     }
 }
@@ -85,12 +93,12 @@ void Application::Update() {
     // Apply forces to bodies
     for (auto body : bodies) {
         // Apply the weight force
-        // Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
-        // body->AddForce(weight * body->mass);
+        //Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
+        //body->AddForce(weight * body->mass);
 
         // Apply the wind force
-        // Vec2 wind = Vec2(20.0 * PIXELS_PER_METER, 0);
-        // body->AddForce(wind);
+        //Vec2 wind = Vec2(5.0 * PIXELS_PER_METER, 0);
+        //body->AddForce(wind);
     }
 
     for (auto body : bodies) {
@@ -116,10 +124,11 @@ void Application::Update() {
             Contact contact;
 
             if(CollisionDetection::IsColliding(a, b, contact)) {
-                contact.ResolvePenetration();
+                std::cout << "YAAAAAA" << std::endl;
+                //contact.ResolveCollision();
                 Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
                 Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
-                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFF0000FF); 
+                Graphics::DrawLine(contact.start.x, contact.start.y, contact.start.x + contact.normal.x * 15, contact.start.y + contact.normal.y * 15, 0xFF0000FF);
 
                 a->IsColliding = true;
                 b->IsColliding = true;
